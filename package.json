@@ -1,0 +1,20 @@
+{
+  "name": "just-another-di",
+  "version": "1.0.0",
+  "description": "Just another dependency injection solution",
+  "main": "lib/index.js",
+  "author": "Valery Vargin <VDVUGaD@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "babel src -d lib",
+    "test": "babel-node ./node_modules/mocha/bin/mocha --check-leaks --reporter spec --bail",
+    "test-cov": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0"
+  }
+}
