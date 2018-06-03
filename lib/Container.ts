@@ -1,144 +1,11 @@
-/**
- * Describes the interface of a container that exposes methods to read its entries
- */
-export interface PsrContainerInterface {
-    /**
-     * Finds an entry of the container by its identifier and returns it
-     *
-     * @param {string} id
-     *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
-     *
-     * @returns {*}
-     */
-    get(id: string): any
-
-    /**
-     * Returns true if the container can return an entry for the given identifier.
-     * Returns false otherwise.
-     *
-     * `has(id)` returning true does not mean that `get(id)` will not throw an exception.
-     * It does however mean that `get(id)` will not throw a `NotFoundExceptionInterface`.
-     *
-     * @param {string} id Identifier of the entry to look for.
-     *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
-     *
-     * @returns {boolean}
-     */
-    has(id: string): boolean
-}
-
-/**
- * Base interface representing a generic exception in a container
- */
-export interface ContainerExceptionInterface extends Error {
-}
-
-/**
- * No entry was found in the container
- */
-export interface NotFoundExceptionInterface extends ContainerExceptionInterface {
-}
-
-/**
- * Entry with the same id already defined
- */
-export interface AlreadyDefinedExceptionInterface extends ContainerExceptionInterface {
-}
-
-/**
- * Entry is not callable, so we can't create object with it
- */
-export interface CreateNotCallableExceptionInterface extends ContainerExceptionInterface {
-}
-
-/**
- * Is not a valid function in arguments
- */
-export interface NotAFunctionExceptionInterface extends ContainerExceptionInterface {
-}
-
-/**
- * Is not a valid class in arguments
- */
-export interface NotAClassExceptionInterface extends ContainerExceptionInterface {
-}
-
-export namespace Options {
-    export interface Factory {
-        createEveryTime?: boolean
-    }
-
-    export interface Class extends Factory {
-        constructorArguments?: void | any[] | string[]
-    }
-}
-
-export namespace Definition {
-    export interface Definition {
-        type: string
-    }
-
-    export interface Scalar extends Definition {
-        value: any
-    }
-
-    export interface Factory extends Definition {
-        factory: (container: ContainerInterface) => any
-        options: Options.Factory
-    }
-
-    export interface Class extends Definition {
-        constructor: new () => any
-        options: Options.Class
-    }
-}
-
-export interface ContainerInterface extends PsrContainerInterface {
-    getDefinition(id: string): Definition.Scalar | Definition.Factory | Definition.Class
-
-    create(id: string): any
-
-    addScalar(id: string, value: any): this
-
-    addFactory(
-        id: string,
-        factory: (container: ContainerInterface) => any,
-        options?: Options.Factory
-    ): this
-
-    addClass(
-        id: string,
-        constructor: new () => any,
-        options?: Options.Class
-    ): this
-}
-
-export class ContainerException extends Error implements ContainerExceptionInterface {
-}
-
-export class AlreadyDefinedException extends ContainerException implements AlreadyDefinedExceptionInterface {
-}
-
-export class NotFoundException extends ContainerException implements NotFoundExceptionInterface {
-}
-
-export class CreateNotCallableException extends ContainerException implements CreateNotCallableExceptionInterface {
-}
-
-export class NotAFunctionException extends ContainerException implements NotAFunctionExceptionInterface {
-}
-
-export class NotAClassException extends ContainerException implements NotAClassExceptionInterface {
-}
-
-export const DEFINITION_TYPE_SCALAR = 'scalar';
-export const DEFINITION_TYPE_FACTORY = 'factory';
-export const DEFINITION_TYPE_CLASS = 'class';
-
+import {ContainerInterface, Definition, Options} from "./ContainerInterface";
+import {
+    AlreadyDefinedException,
+    CreateNotCallableException,
+    NotAClassException,
+    NotAFunctionException,
+    NotFoundException
+} from "./Exception";
 
 /**
  * @param id
@@ -247,10 +114,10 @@ export class Container implements ContainerInterface {
         const definition = this.getDefinition(id);
 
         switch (definition.type) {
-            case DEFINITION_TYPE_FACTORY:
+            case Definition.Types.Factory:
                 result = (definition as Definition.Factory).factory(this);
                 break;
-            case DEFINITION_TYPE_CLASS:
+            case Definition.Types.Class:
                 result = createClass.call(
                     this,
                     definition.constructor,
@@ -277,7 +144,7 @@ export class Container implements ContainerInterface {
     }
 
     addScalar(id: string, value: any): this {
-        add.call(this, id, {type: DEFINITION_TYPE_SCALAR, value});
+        add.call(this, id, {type: Definition.Types.Scalar, value});
         this._created[id] = value;
 
         return this
@@ -289,7 +156,7 @@ export class Container implements ContainerInterface {
         }
 
         options || (options = {});
-        add.call(this, id, {type: DEFINITION_TYPE_FACTORY, factory, options});
+        add.call(this, id, {type: Definition.Types.Factory, factory, options});
         return this
     }
 
@@ -299,7 +166,7 @@ export class Container implements ContainerInterface {
         }
 
         options || (options = {});
-        add.call(this, id, {type: DEFINITION_TYPE_CLASS, constructor, options});
+        add.call(this, id, {type: Definition.Types.Class, constructor, options});
         return this
     }
 }
