@@ -14,7 +14,7 @@
     "declaration": true,
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
-    "removeComments": true,
+    "removeComments": false,
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "declarationDir": "definitions"
