@@ -1,254 +1,188 @@
-import {
-    AlreadyDefinedException,
-    CreateNotCallableException,
-    NotAClassException,
-    NotAFunctionException,
-    NotFoundException
-} from "./Exception";
-
-export namespace Options {
-    export interface Factory {
-        createEveryTime?: boolean
-    }
-
-    export interface Class extends Factory {
-        constructorArguments?: void | any[] | string[]
-    }
+/**
+ * Generic exception in a container
+ */
+export class ContainerException {
 }
 
-export namespace Definition {
-    export enum Types {
-        Scalar = 'scalar',
-        Factory = 'factory',
+/**
+ * Entry with the same id already defined
+ */
+export class AlreadyDefinedException extends ContainerException {
+}
+
+/**
+ * No entry was found in the container
+ */
+export class NotFoundException extends ContainerException {
+}
+
+/**
+ * Container element definition.
+ * By extending this class you can provider more flexible
+ * solutions for container.
+ * Main purpose of this class - compile
+ */
+export class ContainerDefinition {
+    private readonly _value: any;
+    private _result: any;
+    private _optionsPrepared: boolean;
+
+    constructor(value: any, options: ContainerValueOptions) {
+        this._value = value;
+        this._options = options;
+        this._result = undefined;
     }
 
-    export interface Definition {
-        type: string
+    private _options: ContainerValueOptions;
+
+    protected get options(): ContainerValueOptions {
+        if (!this._optionsPrepared) {
+            this.buildOptions();
+        }
+
+        return this._options;
     }
 
-    export interface Scalar extends Definition {
-        value: any
+    protected get isFactory(): boolean {
+        return typeof this._value === 'function';
     }
 
-    export interface Factory extends Definition {
-        factory: (container: ContainerInterface) => any
-        options: Options.Factory
+    public compile(c: Container): any {
+        if (this._result !== undefined && this.options.createEveryTime !== true) {
+            return this._result;
+        }
+
+        return this._result = this.build(c);
+    }
+
+    public clearResult(c: Container): any {
+        this._result = undefined;
+    }
+
+    protected build(c: Container): any {
+        return this.isFactory ? this._value(c, this.options) : this._value;
+    }
+
+    protected buildOptions(): void {
+        if (!this._options || typeof this._options !== 'object') {
+            this._options = defaultValueOptions;
+        }
+
+        Object.keys(defaultValueOptions).forEach((key) => {
+            if (!this._options.hasOwnProperty(key)) {
+                this._options[key] = defaultValueOptions[key];
+            }
+        });
+
+        this._optionsPrepared = true;
     }
 }
 
 /**
- * Describes the interface of a container that exposes methods to read its entries
+ *
  */
-export interface PsrContainerInterface {
-    /**
-     * Finds an entry of the container by its identifier and returns it
-     *
-     * @param {string} id
-     *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
-     *
-     * @returns {*}
-     */
-    get(id: string): any
+export interface ContainerValueOptions {
+    createEveryTime?: boolean
+}
+
+export const defaultValueOptions: ContainerValueOptions = {
+    createEveryTime: false
+};
+
+/**
+ *
+ */
+export interface ContainerOptions {
+    defaultDefinition?: typeof ContainerDefinition
+}
+
+export const defaultOptions: ContainerOptions = {
+    defaultDefinition: ContainerDefinition
+};
+
+export class Container {
+    private readonly _definitions: { [id: string]: ContainerDefinition };
+    private _defaultDefinition: typeof ContainerDefinition;
+
+    constructor(options: ContainerOptions = defaultOptions) {
+        this._definitions = {};
+        this._defaultDefinition = options.defaultDefinition || ContainerDefinition;
+    }
 
     /**
      * Returns true if the container can return an entry for the given identifier.
      * Returns false otherwise.
      *
      * `has(id)` returning true does not mean that `get(id)` will not throw an exception.
-     * It does however mean that `get(id)` will not throw a `NotFoundExceptionInterface`.
+     * It does however mean that `get(id)` will not throw a `NotFoundException`.
      *
      * @param {string} id Identifier of the entry to look for.
      *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
+     * @throws NotFoundException  No entry was found for **this** identifier.
+     * @throws ContainerException Error while retrieving the entry.
      *
      * @returns {boolean}
      */
-    has(id: string): boolean
-}
-
-export interface ContainerInterface extends PsrContainerInterface {
-    getDefinition(id: string): Definition.Scalar | Definition.Factory
-
-    create(id: string): any
-
-    addScalar(id: string, value: any): this
-
-    addFactory(
-        id: string,
-        factory: (container: ContainerInterface) => any,
-        options?: Options.Factory
-    ): this
-
-    addClass(
-        id: string,
-        constructor: new () => any,
-        options?: Options.Class
-    ): this
-}
-
-/**
- * @param {string} id
- * @param definition
- * @this {Container}
- */
-function add(id: string, definition: Definition.Factory | Definition.Scalar): void {
-    if (this.has(id)) {
-        throw new AlreadyDefinedException()
-    }
-
-    this._definitions[id] = definition
-}
-
-/**
- * @param constructor
- * @param {Array} constructorArguments
- * @this {Container}
- */
-function createClass(constructor, constructorArguments: any[]): object {
-    constructorArguments.unshift(constructor);
-    const bound = (Function.prototype.bind.apply(constructor, constructorArguments));
-
-    return new bound
-}
-
-/**
- * @param cls
- * @returns {Array}
- */
-function extractArguments(cls): string[] {
-    const matches = cls.prototype.constructor.toString().match(/function\s+[^(]*\(([^)]*)\)/);
-    let result = [];
-
-    if ((matches && Array.isArray(matches) && matches[1])) {
-        const match = String(matches[1]).replace(/\s/g, '');
-        result = match.length ? match.split(',') : [];
-    }
-
-
-    return result;
-}
-
-/**
- * @param cls
- * @param {*} args
- * @this {Container}
- */
-function resolveConstructorArguments(cls, args): any[] {
-    let result;
-
-    switch (true) {
-        case Array.isArray(args):
-            result = args;
-            break;
-        case typeof args === 'object':
-            result = extractArguments(cls).map((key) => {
-                return args.hasOwnProperty(key) ? args[key] : undefined
-            });
-            break;
-        default:
-            result = [];
-            break
-    }
-
-    return result.map((arg) => {
-        if (typeof arg === 'string' && arg.substr(0, 1) === '@') {
-            return this.get(arg.substr(1))
-        }
-
-        return arg
-    })
-}
-
-export class Container implements ContainerInterface {
-    private readonly _definitions: {};
-    private readonly _created: {};
-
-    constructor() {
-        this._definitions = {};
-        this._created = {};
-    }
-
     has(id: string): boolean {
-        return this._definitions.hasOwnProperty(id)
+        return this._definitions.hasOwnProperty(id);
     }
 
-    getDefinition(id: string): Definition.Scalar | Definition.Factory {
-        if (!this.has(id)) {
-            throw new NotFoundException()
+    /**
+     * Finds an entry of the container by its identifier and returns it
+     *
+     * @param {string} id
+     * @param {boolean} forceRecreate - if you need force recompile definition
+     *
+     * @throws NotFoundException  No entry was found for **this** identifier.
+     * @throws ContainerException Error while retrieving the entry.
+     *
+     * @returns {*}
+     */
+    get(id: string, forceRecreate: boolean = false): any {
+        if (!this._definitions.hasOwnProperty(id)) {
+            throw new NotFoundException();
         }
 
-        return this._definitions[id]
+        const definition = this._definitions[id];
+
+        if (forceRecreate) {
+            definition.clearResult(this);
+        }
+
+        return definition.compile(this);
     }
 
-    get(id: string): any {
-        if (this._created.hasOwnProperty(id)) {
-            return this._created[id]
+    /**
+     * Define entry in container with its identifier.
+     *
+     * @param {string} id
+     * @param {ContainerDefinition} definition
+     *
+     * @returns {self}
+     */
+    define(id: string, definition: ContainerDefinition): this {
+        if (this.has(id)) {
+            throw new AlreadyDefinedException();
         }
 
-        return this.create(id)
+        this._definitions[id] = definition;
+
+        return this;
     }
 
-    create(id: string): any {
-        let result;
-        const definition = this.getDefinition(id);
-
-        switch (definition.type) {
-            case Definition.Types.Factory:
-                result = (definition as Definition.Factory).factory(this);
-                break;
-            default:
-                throw new CreateNotCallableException()
-        }
-
-        if (
-            !this._created.hasOwnProperty(id)
-            && (!(definition as Definition.Factory).options.hasOwnProperty('createEveryTime')
-            || !(definition as Definition.Factory).options.createEveryTime)
-        ) {
-            this._created[id] = result
-        }
-
-        return result
+    /**
+     * Simple proxy
+     *
+     * @param {string} id
+     * @param {*} value
+     * @param {ContainerValueOptions} options
+     * @returns {self}
+     */
+    set(id: string, value: any, options: ContainerValueOptions = defaultValueOptions): this {
+        return this.define(id, new this._defaultDefinition(value, options));
     }
 
-    addScalar(id: string, value: any): this {
-        add.call(this, id, {type: Definition.Types.Scalar, value});
-        this._created[id] = value;
-
-        return this
-    }
-
-    addFactory(id: string, factory: (container: ContainerInterface) => any, options?: Options.Factory): this {
-        if (typeof factory !== 'function') {
-            throw new NotAFunctionException()
-        }
-
-        options || (options = {});
-        add.call(this, id, {type: Definition.Types.Factory, factory, options});
-        return this
-    }
-
-    addClass(id: string, constructor: { new(): any }, options?: Options.Class): this {
-        if (!constructor || !constructor.prototype || !constructor.prototype.constructor) {
-            throw new NotAClassException()
-        }
-
-        options || (options = {});
-        this.addFactory(id, function (c: Container) {
-            return createClass.call(
-                c,
-                constructor,
-                resolveConstructorArguments.call(
-                    c,
-                    constructor,
-                    options.constructorArguments
-                )
-            );
-        }, {createEveryTime: options.createEveryTime});
-
-        return this
+    unset(id: string): void {
+        delete this._definitions[id];
     }
 }

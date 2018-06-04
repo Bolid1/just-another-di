@@ -56,16 +56,6 @@ di.get('fooObj'); // Will return object#1
 // instanceof FooClass with props:
 // {arg: 'Counter = 0', arg2: 'My awesome string'}
 // Because container always memorize first result of creation
-
-di.addClass('fooObj2', FooClass, {constructorArguments: {arg2: '@fooObj', arg: 'another'}});
-di.get('fooObj2'); // Will return object#3 
-// instanceof FooClass with props:
-// {arg: 'another', arg2: object#1}
-
-di.addClass('barObj', BarClass, {constructorArguments: ['@fooObj2'], createEveryTime: true});
-di.get('barObj'); // Will return object#4 
-// instanceof BarClass with props:
-// {fooObject: object#3}
 ```
 ### Typescript
 ```typescript
@@ -111,16 +101,6 @@ di.get('fooObj'); // Will return object#1
 // instanceof FooClass with props:
 // {arg: 'Counter = 0', arg2: 'My awesome string'}
 // Because container always memorize first result of creation
-
-di.addClass('fooObj2', FooClass, {constructorArguments: {arg2: '@fooObj', arg: 'another'}});
-di.get('fooObj2'); // Will return object#3 
-// instanceof FooClass with props:
-// {arg: 'another', arg2: object#1}
-
-di.addClass('barObj', BarClass, {constructorArguments: ['@fooObj2'], createEveryTime: true});
-di.get('barObj'); // Will return object#4 
-// instanceof BarClass with props:
-// {fooObject: object#3}
 ```
 ## API description
 Module returns Container class, that must be initiated for usage
@@ -151,12 +131,6 @@ options?: {createEveryTime: false}
 Container will execute function on demand (di.get(name)),
 memorize result of execution (createEveryTime !== true),
 then will return execution result;
-
-**addClass(
-name: string,
-class: function,
-options: {createEveryTime: false, constructorArguments: object | any[]}
-)** - wrapper function for add ability to add class definition to container.
 
 ## Semver
 Until di reaches a `1.0` release,
