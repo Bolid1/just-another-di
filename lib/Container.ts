@@ -102,7 +102,7 @@ export const defaultOptions: ContainerOptions = {
 
 export class Container {
     private readonly _definitions: { [id: string]: ContainerDefinition };
-    private _defaultDefinition: typeof ContainerDefinition;
+    private readonly _defaultDefinition: typeof ContainerDefinition;
 
     constructor(options: ContainerOptions = defaultOptions) {
         this._definitions = {};
