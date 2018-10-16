@@ -186,3 +186,5 @@ export class Container {
         delete this._definitions[id];
     }
 }
+
+export default Container;

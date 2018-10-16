@@ -101,7 +101,7 @@ const di = new Container;
 
 **Typescript**:
 ```typescript
-import {Container} from 'just-another-di';
+import Container from 'just-another-di';
 const di = new Container;
 ```
 
