@@ -11,6 +11,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
+    "build": "tsc",
     "test": "mocha --opts mocha.opts",
     "test-cov": "nyc mocha --opts mocha.opts"
   },

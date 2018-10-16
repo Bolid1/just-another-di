@@ -20,8 +20,7 @@
     "declarationDir": "definitions"
   },
   "include": [
-    "index.ts",
-    "lib/**/*"
+    "index.ts"
   ],
   "exclude": [
     "node_modules",

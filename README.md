@@ -30,17 +30,13 @@ function FooClass (arg, arg2) {
     this.arg2 = arg2;
 }
 
-function BarClass (fooObject) {
-    this.fooObject = fooObject;
-}
-
 // Initialize new Container object
 const di = new Container;
-di.addScalar('my.var', 'My awesome string');
+di.set('my.var', 'My awesome string');
 di.get('my.var'); // Will return 'My awesome string' value
 
 let factoryCounter = 0;
-di.addFactory('fooObj', function (c) {
+di.set('fooObj', function (c) {
     return new FooClass('Counter = ' + (factoryCounter++), c.get('my.var'))
 }, {createEveryTime: false}); // Default value for createEveryTime option
 // If option createEveryTime will be true,
@@ -49,13 +45,13 @@ di.addFactory('fooObj', function (c) {
 di.get('fooObj'); // Will return object#1 
 // instanceof FooClass with props:
 // {arg: 'Counter = 0', arg2: 'My awesome string'}
-di.create('fooObj'); // Will return object#2
+di.get('fooObj', true); // Will return object#2
 // instanceof FooClass with props:
 // {arg: 'Counter = 1', arg2: 'My awesome string'}
-di.get('fooObj'); // Will return object#1 
+di.get('fooObj'); // Will return object#2
 // instanceof FooClass with props:
-// {arg: 'Counter = 0', arg2: 'My awesome string'}
-// Because container always memorize first result of creation
+// {arg: 'Counter = 1', arg2: 'My awesome string'}
+// Because container memorize only last result of creation
 ```
 ### Typescript
 ```typescript
@@ -71,21 +67,13 @@ class FooClass {
     }
 }
 
-class BarClass {
-    private fooObject: FooClass;
-
-    constructor(fooObject: FooClass) {
-        this.fooObject = fooObject;
-    }
-}
-
 // Initialize new Container object
 const di = new Container;
-di.addScalar('my.var', 'My awesome string');
+di.set('my.var', 'My awesome string');
 di.get('my.var'); // Will return 'My awesome string' value
 
 let factoryCounter = 0;
-di.addFactory('fooObj', function (c: Container) {
+di.set('fooObj', function (c: Container) {
     return new FooClass('Counter = ' + (factoryCounter++), c.get('my.var'))
 }, {createEveryTime: false}); // Default value for createEveryTime option
 // If option createEveryTime will be true,
@@ -94,13 +82,13 @@ di.addFactory('fooObj', function (c: Container) {
 di.get('fooObj'); // Will return object#1 
 // instanceof FooClass with props:
 // {arg: 'Counter = 0', arg2: 'My awesome string'}
-di.create('fooObj'); // Will return object#2
+di.set('fooObj', true); // Will return object#2
 // instanceof FooClass with props:
 // {arg: 'Counter = 1', arg2: 'My awesome string'}
-di.get('fooObj'); // Will return object#1 
+di.get('fooObj'); // Will return object#2
 // instanceof FooClass with props:
-// {arg: 'Counter = 0', arg2: 'My awesome string'}
-// Because container always memorize first result of creation
+// {arg: 'Counter = 1', arg2: 'My awesome string'}
+// Because container memorize only last result of creation
 ```
 ## API description
 Module returns Container class, that must be initiated for usage
@@ -119,18 +107,12 @@ const di = new Container;
 
 Next you can use on of following methods to define values:
 
-**addScalar( name: string, value: any )** - define scalar value
-in container (numbers, strings, objects, functions, anything you need).
-Container will return it unchanged;
-
-**addFactory(
-name: string,
-factory: function(c: Container):any,
-options?: {createEveryTime: false}
-)** - define factory lambda function, for object initialization.
+**set( name: string, value: any, options?: {createEveryTime: false} )** -
+ define factory lambda function, for object initialization.
 Container will execute function on demand (di.get(name)),
 memorize result of execution (createEveryTime !== true),
 then will return execution result;
+if typeof value is scalar Container will return it unchanged on demand;
 
 ## Semver
 Until di reaches a `1.0` release,
