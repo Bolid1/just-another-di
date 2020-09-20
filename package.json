@@ -12,8 +12,8 @@
   "private": false,
   "scripts": {
     "build": "tsc",
-    "test": "mocha --opts mocha.opts",
-    "test-cov": "nyc mocha --opts mocha.opts"
+    "test": "mocha -r ts-node/register --check-leaks --bail --check-leaks lib/**/*.spec.ts",
+    "test-cov": "nyc mocha -r ts-node/register --check-leaks --bail --check-leaks lib/**/*.spec.ts"
   },
   "nyc": {
     "reporter": "html",
@@ -30,14 +30,14 @@
     "all": true
   },
   "devDependencies": {
-    "@types/assert": "^0.0.31",
+    "@types/assert": "^1.5.2",
     "@types/chai": "^4.1.3",
-    "@types/mocha": "^5.2.1",
+    "@types/mocha": "^8.0.3",
     "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "nyc": "^12.0.1",
+    "mocha": "^8.1.3",
+    "nyc": "^15.1.0",
     "source-map-support": "^0.5.6",
-    "ts-node": "^6.0.5",
-    "typescript": "^2.9.1"
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3"
   }
 }
