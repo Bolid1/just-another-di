@@ -4,26 +4,17 @@
       "es6",
       "dom"
     ],
-    "module": "commonjs",
+    "module": "CommonJS",
     "target": "es5",
     "noImplicitAny": false,
     "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true,
-    "removeComments": false,
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "declarationDir": "definitions"
+    "removeComments": false
   },
   "include": [
-    "index.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "lib/**/*.spec.ts"
+    "lib"
   ]
 }
