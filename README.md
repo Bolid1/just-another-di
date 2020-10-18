@@ -1,7 +1,7 @@
 # just-another-di
-[![npm version](https://img.shields.io/npm/v/just-another-di.svg?style=flat-square)](https://www.npmjs.org/package/axios)
-[![build status](https://img.shields.io/travis/Bolid1/just-another-di.svg?style=flat-square)](https://travis-ci.org/axios/axios)
-[![code coverage](https://img.shields.io/coveralls/Bolid1/just-another-di.svg?style=flat-square)](https://coveralls.io/r/mzabriskie/axios)
+[![npm version][npm-shield]][npm-link]
+[![build status][travis-shield]][travis-link]
+[![code coverage][coveralls-shield]][coveralls-link]
 
 Just another one implementation of di container for Javascript - TypeScript / Node.js (v6)
 
@@ -120,3 +120,11 @@ breaking changes will be released with a new minor version.
 
 ## License
 MIT
+
+
+[npm-shield]: https://img.shields.io/npm/v/just-another-di.svg?style=flat-square
+[npm-link]: https://www.npmjs.org/package/axios
+[travis-shield]: https://img.shields.io/travis/Bolid1/just-another-di.svg?style=flat-square
+[travis-link]: https://travis-ci.org/Bolid1/just-another-di
+[coveralls-shield]: https://img.shields.io/coveralls/Bolid1/just-another-di.svg?style=flat-square
+[coveralls-link]: https://coveralls.io/r/Bolid1/just-another-di
