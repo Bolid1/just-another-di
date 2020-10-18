@@ -13,10 +13,8 @@
   "scripts": {
     "clean": "rimraf coverage dist release",
     "build": "tsc",
-    "build:release": "tsc -p tsconfig.release.json",
-    "pretest": "yarn build",
-    "test": "jest --coverage --rootDir dist",
-    "test:watch": "jest --watch --rootDir lib"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",

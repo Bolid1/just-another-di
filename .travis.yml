@@ -1,8 +1,5 @@
 language: node_js
 node_js:
-# Minimal node requirement
-  - "6"
-# Current node version
   - "14"
 
 cache: yarn

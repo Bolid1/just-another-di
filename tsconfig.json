@@ -16,5 +16,8 @@
   },
   "include": [
     "lib"
+  ],
+  "exclude": [
+    "lib/**/*.spec.ts"
   ]
 }
