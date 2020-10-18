@@ -1,9 +1,5 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es6",
-      "dom"
-    ],
     "module": "CommonJS",
     "target": "es5",
     "noImplicitAny": false,
@@ -15,10 +11,6 @@
     "removeComments": false,
     "declarationDir": "definitions"
   },
-  "include": [
-    "lib"
-  ],
-  "exclude": [
-    "lib/**/*.spec.ts"
-  ]
+  "include": ["lib"],
+  "exclude": []
 }
