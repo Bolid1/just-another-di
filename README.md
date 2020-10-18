@@ -1,9 +1,10 @@
 # just-another-di
-[![npm version][npm-shield]][npm-link]
-[![build status][travis-shield]][travis-link]
-[![code coverage][coveralls-shield]][coveralls-link]
+[![npm version][npm-version-shield]][npm-version-link]
+[![npm downloads][npm-downloads-shield]][npm-downloads-link]
+[![Build Status][travis-shield]][travis-link]
+[![Coverage Status][coveralls-shield]][coveralls-link]
 
-Just another one implementation of di container for Javascript - TypeScript / Node.js (v6)
+Just another one implementation of di container for Javascript - TypeScript / Node.js
 
 ## Features
 
@@ -122,9 +123,11 @@ breaking changes will be released with a new minor version.
 MIT
 
 
-[npm-shield]: https://img.shields.io/npm/v/just-another-di.svg?style=flat-square
-[npm-link]: https://www.npmjs.org/package/axios
-[travis-shield]: https://img.shields.io/travis/Bolid1/just-another-di.svg?style=flat-square
+[npm-version-shield]: https://img.shields.io/npm/v/just-another-di.svg?style=for-the-badge
+[npm-version-link]: https://www.npmjs.org/package/just-another-di
+[npm-downloads-shield]: https://img.shields.io/npm/dm/just-another-di?style=for-the-badge
+[npm-downloads-link]: https://www.npmjs.org/package/just-another-di
+[travis-shield]: https://img.shields.io/travis/Bolid1/just-another-di?style=for-the-badge
 [travis-link]: https://travis-ci.org/Bolid1/just-another-di
-[coveralls-shield]: https://img.shields.io/coveralls/Bolid1/just-another-di.svg?style=flat-square
-[coveralls-link]: https://coveralls.io/r/Bolid1/just-another-di
+[coveralls-shield]: https://img.shields.io/coveralls/github/Bolid1/just-another-di?style=for-the-badge
+[coveralls-link]: https://coveralls.io/github/Bolid1/just-another-di
