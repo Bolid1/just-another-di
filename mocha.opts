@@ -1,5 +1,0 @@
--r ts-node/register
---check-leaks
---bail
---check-leaks
-lib/**/*.spec.ts

@@ -1,7 +1,7 @@
 # just-another-di
-[![npm version](https://img.shields.io/npm/v/just-another-di.svg?style=flat-square)](https://www.npmjs.org/package/axios)
-[![build status](https://img.shields.io/travis/Bolid1/just-another-di.svg?style=flat-square)](https://travis-ci.org/axios/axios)
-[![code coverage](https://img.shields.io/coveralls/Bolid1/just-another-di.svg?style=flat-square)](https://coveralls.io/r/mzabriskie/axios)
+[![npm version][npm-shield]][npm-link]
+[![build status][travis-shield]][travis-link]
+[![code coverage][coveralls-shield]][coveralls-link]
 
 Just another one implementation of di container for Javascript - TypeScript / Node.js (v6)
 
@@ -24,7 +24,7 @@ $ yarn add just-another-di
 ## Usage examples
 ### NodeJS
 ```javascript
-const Container = require('just-another-di').Container;
+const { Container } = require('just-another-di');
 function FooClass (arg, arg2) {
     this.arg = arg;
     this.arg2 = arg2;
@@ -95,7 +95,7 @@ Module returns Container class, that must be initiated for usage
 
 **Javascript**:
 ```javascript
-const Container = require('just-another-di').Container;
+const { Container } = require('just-another-di');
 const di = new Container;
 ```
 
@@ -112,7 +112,7 @@ Next you can use on of following methods to define values:
 Container will execute function on demand (di.get(name)),
 memorize result of execution (createEveryTime !== true),
 then will return execution result;
-if typeof value is scalar Container will return it unchanged on demand;
+if typeof value is a scalar Container will return it unchanged on demand;
 
 ## Semver
 Until di reaches a `1.0` release,
@@ -120,3 +120,11 @@ breaking changes will be released with a new minor version.
 
 ## License
 MIT
+
+
+[npm-shield]: https://img.shields.io/npm/v/just-another-di.svg?style=flat-square
+[npm-link]: https://www.npmjs.org/package/axios
+[travis-shield]: https://img.shields.io/travis/Bolid1/just-another-di.svg?style=flat-square
+[travis-link]: https://travis-ci.org/Bolid1/just-another-di
+[coveralls-shield]: https://img.shields.io/coveralls/Bolid1/just-another-di.svg?style=flat-square
+[coveralls-link]: https://coveralls.io/r/Bolid1/just-another-di

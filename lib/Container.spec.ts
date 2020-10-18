@@ -1,18 +1,16 @@
 import Container from './Container';
-import {expect} from 'chai';
-import 'mocha';
 
 describe('Hello function', () => {
     let di;
 
-    beforeEach(function () {
+    beforeEach(() => {
         di = new Container()
     });
 
     it('should keep scalar value', () => {
         const value = 123;
         di.set('my.value', value);
-        expect(di.get('my.value')).to.equal(value);
+        expect(di.get('my.value')).toEqual(value);
     });
 
     it('should throw error if try to override value by id', () => {
@@ -25,7 +23,7 @@ describe('Hello function', () => {
             error = ex
         }
 
-        expect(error).to.not.be.false;
+        expect(error).not.toBeFalsy();
     });
 
     it('should throw error if value by id not set', () => {
@@ -37,7 +35,7 @@ describe('Hello function', () => {
             error = ex
         }
 
-        expect(error).to.not.be.false;
+        expect(error).not.toBeFalsy();
     });
 
     it('should not throw error if value by id was unset', () => {
@@ -47,7 +45,7 @@ describe('Hello function', () => {
         di.unset('my.value');
         di.set('my.value', 456);
 
-        expect(error).to.be.false;
+        expect(error).toBeFalsy;
     });
 
     it('should work with factory function', function () {
@@ -55,16 +53,16 @@ describe('Hello function', () => {
         const value = {foo: 'bar'};
         let counter = 0;
         di.set(name, function (c) {
-            expect(c).to.equal(di);
+            expect(c).toEqual(di);
             ++counter;
             return value
         });
 
-        expect(counter).to.equal(0);
-        expect(di.get(name)).to.equal(value);
-        expect(counter).to.equal(1);
+        expect(counter).toEqual(0);
+        expect(di.get(name)).toEqual(value);
+        expect(counter).toEqual(1);
         di.get(name);
-        expect(counter).to.equal(1)
+        expect(counter).toEqual(1)
     });
 
     it('should call factory function, if called with forceRecreate flag', function () {
@@ -72,12 +70,12 @@ describe('Hello function', () => {
         const values = [{foo: 'bar'}, {bar: 'baz'}];
         let counter = 0;
         di.set(name, function (c) {
-            expect(c).to.equal(di);
+            expect(c).toEqual(di);
             return values[counter++]
         }, {createEveryTime: false});
 
-        expect(di.get(name, true)).to.equal(values[0]);
-        expect(di.get(name, true)).to.equal(values[1])
+        expect(di.get(name, true)).toEqual(values[0]);
+        expect(di.get(name, true)).toEqual(values[1])
     });
 
     it('should use default createEveryTime value if options with broken type', function () {
@@ -86,15 +84,15 @@ describe('Hello function', () => {
         let counter = 0;
         di.set(name, function (c) {
             ++counter;
-            expect(c).to.equal(di);
+            expect(c).toEqual(di);
             return value
         }, null);
 
-        expect(counter).to.equal(0);
-        expect(di.get(name)).to.equal(value);
-        expect(counter).to.equal(1);
+        expect(counter).toEqual(0);
+        expect(di.get(name)).toEqual(value);
+        expect(counter).toEqual(1);
         di.get(name);
-        expect(counter).to.equal(1)
+        expect(counter).toEqual(1)
     });
 
     it('should use default createEveryTime value if options without some values', function () {
@@ -103,15 +101,15 @@ describe('Hello function', () => {
         let counter = 0;
         di.set(name, function (c) {
             ++counter;
-            expect(c).to.equal(di);
+            expect(c).toEqual(di);
             return value
         }, {foo: 'bar'});
 
-        expect(counter).to.equal(0);
-        expect(di.get(name)).to.equal(value);
-        expect(counter).to.equal(1);
+        expect(counter).toEqual(0);
+        expect(di.get(name)).toEqual(value);
+        expect(counter).toEqual(1);
         di.get(name);
-        expect(counter).to.equal(1)
+        expect(counter).toEqual(1)
     });
 
     it('should call factory function, if marked as createEveryTime', function () {
@@ -119,11 +117,11 @@ describe('Hello function', () => {
         const values = [{foo: 'bar'}, {bar: 'baz'}];
         let counter = 0;
         di.set(name, function (c) {
-            expect(c).to.equal(di);
+            expect(c).toEqual(di);
             return values[counter++]
         }, {createEveryTime: true});
 
-        expect(di.get(name)).to.equal(values[0]);
-        expect(di.get(name)).to.equal(values[1])
+        expect(di.get(name)).toEqual(values[0]);
+        expect(di.get(name)).toEqual(values[1])
     });
 });
